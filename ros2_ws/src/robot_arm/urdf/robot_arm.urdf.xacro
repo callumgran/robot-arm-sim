@@ -1,0 +1,162 @@
+<?xml version="1.0" ?>
+<robot name="robot_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Base Link (Fixed to Ground) -->
+    <link name="base_link">
+        <inertial>
+            <mass value="5.0"/>
+            <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+        </inertial>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- First Joint (connects at top of base) -->
+    <joint name="joint_1" type="revolute">
+        <parent link="base_link"/>
+        <child link="link_1"/>
+        <origin xyz="0 0 1.1"/> 
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="50" velocity="2.0"/>
+    </joint>
+
+    <!-- First Arm Segment -->
+    <link name="link_1">
+        <inertial>
+            <mass value="2.0"/>
+            <inertia ixx="0.02" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+        </inertial>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- Second Joint (connects at top of first link) -->
+    <joint name="joint_2" type="revolute">
+        <parent link="link_1"/>
+        <child link="link_2"/>
+        <origin xyz="0 0 1.1"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-3.14" upper="3.14" effort="50" velocity="2.0"/>
+    </joint>
+
+    <!-- Second Arm Segment -->
+    <link name="link_2">
+        <inertial>
+            <mass value="1.5"/>
+            <inertia ixx="0.015" ixy="0.0" ixz="0.0" iyy="0.015" iyz="0.0" izz="0.015"/>
+        </inertial>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- Third Joint (connects at top of second link) -->
+    <joint name="joint_3" type="revolute">
+        <parent link="link_2"/>
+        <child link="link_3"/>
+        <origin xyz="0 0 1.1"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-3.14" upper="3.14" effort="50" velocity="2.0"/>
+    </joint>
+
+    <!-- Third Arm Segment (End Effector) -->
+    <link name="link_3">
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+        </inertial>
+
+        <collision>
+            <geometry>
+                <cylinder radius="0.25" length="1"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <geometry>
+                <cylinder radius="0.5" length="1"/>
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <gazebo>
+        <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+            <robotSimType>gazebo_ros2_control/GazeboSystem</robotSimType>
+            <parameters>/home/callum/Documents/eit/robot-arm-sim/ros2_ws/src/robot_arm/config/robot_arm_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+
+    <ros2_control name="robot_arm_control" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+
+        <joint name="joint_1">
+            <command_interface name="position">
+                <param name="min">0</param>
+                <param name="max">100</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint_2">
+            <command_interface name="position">
+                <param name="min">0</param>
+                <param name="max">100</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint_3">
+            <command_interface name="position">
+                <param name="min">0</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+</robot>
