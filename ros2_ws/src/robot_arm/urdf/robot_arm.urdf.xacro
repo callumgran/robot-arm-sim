@@ -4,7 +4,7 @@
     <!-- Base Link (Fixed to Ground) -->
     <link name="base_link">
         <inertial>
-            <mass value="5.0"/>
+            <mass value="1000.0"/>
             <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
         </inertial>
 
@@ -29,7 +29,7 @@
         <parent link="base_link"/>
         <child link="link_1"/>
         <origin xyz="0 0 1.1"/> 
-        <axis xyz="0 0 1"/>
+        <axis xyz="0 1 0"/>
         <limit lower="-3.14" upper="3.14" effort="50" velocity="2.0"/>
     </joint>
 
@@ -56,7 +56,66 @@
         </visual>
     </link>
 
-    <!-- Second Joint (connects at top of first link) -->
+    <link name="ball_left">
+        <inertial>
+            <mass value="0.5"/>
+            <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+        </inertial>
+        
+        <collision>
+            <geometry>
+            <sphere radius="0.5"/>
+            </geometry>
+        </collision>
+        
+        <visual>
+            <geometry>
+            <sphere radius="0.5"/>
+            </geometry>
+            <material name="orange">
+            <color rgba="1 0.5 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- Right Ball (attached to the right side of link_1) -->
+    <link name="ball_right">
+        <inertial>
+            <mass value="0.5"/>
+            <inertia ixx="0.005" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/>
+        </inertial>
+        
+        <collision>
+            <geometry>
+            <sphere radius="0.5"/>
+            </geometry>
+        </collision>
+        
+        <visual>
+            <geometry>
+            <sphere radius="0.5"/>
+            </geometry>
+            <material name="purple">
+            <color rgba="0.5 0 0.5 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <!-- Fixed Joint for the Left Ball -->
+    <joint name="ball_left_joint" type="fixed">
+        <!-- Attach the ball to link_1 -->
+        <parent link="base_link"/>
+        <child link="ball_left"/>
+        <origin xyz="0 0.6 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Fixed Joint for the Right Ball -->
+    <joint name="ball_right_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="ball_right"/>
+        <origin xyz="0 -0.6 0" rpy="0 0 0"/>
+    </joint>
+
     <joint name="joint_2" type="revolute">
         <parent link="link_1"/>
         <child link="link_2"/>
@@ -93,7 +152,7 @@
         <parent link="link_2"/>
         <child link="link_3"/>
         <origin xyz="0 0 1.1"/>
-        <axis xyz="1 0 0"/>
+        <axis xyz="0 1 0"/>
         <limit lower="-3.14" upper="3.14" effort="50" velocity="2.0"/>
     </joint>
 
@@ -123,7 +182,7 @@
     <gazebo>
         <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
             <robotSimType>gazebo_ros2_control/GazeboSystem</robotSimType>
-            <parameters>/home/callum/Documents/eit/robot-arm-sim/ros2_ws/src/robot_arm/config/robot_arm_controllers.yaml</parameters>
+            <parameters>$(find robot_arm)/config/robot_arm_controllers.yaml</parameters>
         </plugin>
     </gazebo>
 
