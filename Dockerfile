@@ -1,4 +1,4 @@
-FROM ros:humble-ros-base
+FROM --platform=linux/amd64 ros:humble-ros-base
 
 ENV ROS_DISTRO=humble
 ENV DEBIAN_FRONTEND=noninteractive

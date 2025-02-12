@@ -5,6 +5,7 @@ services:
     container_name: robot-arm-container
     build:
       context: .
+      platform: linux/amd64
     image: robot-arm-ros
     stdin_open: true
     tty: true
